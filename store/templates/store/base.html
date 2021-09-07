@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+    {% if title %}
+    <title> Ecommerce - {{ title }} </title>
+    {% else %}
+    <title> Ecommerce </title>
+    {% endif %}
+
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+        function getToken(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        const csrftoken = getToken('csrftoken');
+    </script>
+</head>
+
+<body>
+{% if request.user.is_superuser %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'admin-dashboard' %}">Ecommerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbaradmin"
+                aria-controls="navbaradmin" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse me-4" id="navbaradmin">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% block adminactive %} {% endblock adminactive %}"
+                       aria-current="page" href="{% url 'admin-dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block productsactive %} {% endblock productsactive %}"
+                       href="{% url 'admin-products-view' %}">Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block customeractive %} {% endblock customeractive %}"
+                       href="{% url 'admin-view-customer' %}">Customers</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block orderactive %} {% endblock orderactive %}"
+                       href="">Orders</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block messagesactive %} {% endblock messagesactive %}"
+                       href="{% url 'inbox' %}">Messages ({{ request.session.messages }})</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% block feedbackactive %} {% endblock feedbackactive %}"
+                       href="{% url 'feedbacks' %}">Feedbacks</a>
+                </li>
+            </ul>
+
+            <div class="dropdown me-4">
+                <a class="text-decoration-none text-white dropdown-toggle" type="button" id="adminprofileDropdown"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <strong>Hello, {{request.user}}</strong>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="adminprofileDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'add-product' %}">Add Product</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+{% else %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'customer-products-view' %}">Ecommerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbargeneral"
+                aria-controls="navbargeneral" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbargeneral">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% block storeactive %} {% endblock storeactive %}" aria-current="page"
+                       href="{% url 'customer-products-view' %}">Store</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="moreDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        More
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="moreDropdown">
+                        <li><a class="dropdown-item" href="{% url 'send-feedback' %}">Send Feedback</a></li>
+                        <li><a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a></li>
+                        <li><a class="dropdown-item" href="{% url 'about' %}">About Us</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            {% if request.user.is_authenticated %}
+            <div class="dropdown mx-4">
+                <a class="text-decoration-none text-white dropdown-toggle" type="button" id="profileDropdown"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <strong>Hello, {{request.user}}</strong>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Orders</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="navbar-nav ms-2">
+                <a class="btn btn-info me-2" href="{% url 'login' %}">Login</a>
+                <a class="btn btn-info me-2" href="{% url 'register' %}">Register</a>
+            </div>
+            {% endif %}
+
+            <div class="navbar-nav me-2">
+                <div class="cart1 largenav col-sm-2">
+                    <a class="cart-button" href="{% url 'cart' %}">
+                        <svg class="cart-svg" viewBox="0 0 16 16 ">
+                            <path d="M15.32 2.405H4.887C3 2.405 2.46.805 2.46.805L2.257.21C2.208.085 2.083 0 1.946 0H.336C.1 0-.064.24.024.46l.644 1.945L3.11 9.767c.047.137.175.23.32.23h8.418l-.493 1.958H3.768l.002.003c-.017 0-.033-.003-.05-.003-1.06 0-1.92.86-1.92 1.92s.86 1.92 1.92 1.92c.99 0 1.805-.75 1.91-1.712l5.55.076c.12.922.91 1.636 1.867 1.636 1.04 0 1.885-.844 1.885-1.885 0-.866-.584-1.593-1.38-1.814l2.423-8.832c.12-.433-.206-.86-.655-.86 "
+                                  fill="#fff"></path>
+                        </svg>
+                        {% if total_cart_items %}
+                        Cart <span class="item-number" id="cart">{{ total_cart_items }}</span>
+                        {% else %}
+                        Cart <span class="item-number">0</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<div class="container">
+    {% block body %} {% endblock body %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+</body>
+</html>

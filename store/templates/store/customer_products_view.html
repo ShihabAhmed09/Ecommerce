@@ -1,0 +1,32 @@
+{% extends 'store/base.html' %}
+{% block storeactive %} active {% endblock storeactive %}
+
+{% block body %}
+
+<br>
+<div class="row my-4">
+    {% for product in products %}
+    <div class="col-lg-3">
+        <div class="card card-body">
+            <img class="thumbnail" src="{{ product.imageURL }}">
+            <div class="product-box-element">
+                <h5 class="product-item-name"><a href="{% url 'customer-product-details' product.id %}"
+                                                 class="text-decoration-none text-dark">{{ product.name }}</a></h5>
+                <hr>
+                <h4 class="product-item-price">{{ product.price|floatformat:2 }}/=</h4>
+                <div class="d-grid">
+                    <button class="btn btn-info add-btn update-cart" data-product="{{ product.id }}"
+                            data-action="add"><i class="fas fa-cart-plus me-3"></i>Add to Cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if forloop.counter|divisibleby:4 %}
+</div>
+<div class="row my-4">
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% endblock body %}

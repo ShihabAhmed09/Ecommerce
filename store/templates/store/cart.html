@@ -1,0 +1,49 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row my-4">
+    <div class="col-lg-8">
+        <div class="box-element shadow">
+            <div class="cart-row">
+                <div style="flex:2"></div>
+                <div style="flex:2"><strong>Product Name</strong></div>
+                <div style="flex:1"><strong>Unit Price</strong></div>
+                <div style="flex:1"><strong>Quantity</strong></div>
+                <div style="flex:1"><strong style="float: right;">Total</strong></div>
+            </div>
+
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{ item.product.imageURL }}"></div>
+                <div style="flex:2;"><p>{{ item.product.name }}</p></div>
+                <div style="flex:1"><p>{{ item.product.price|floatformat:2 }}/=</p></div>
+                <div style="flex:1">
+                    <p class="quantity">{{ item.quantity }}</p>
+                    <div class="quantity">
+                        <img class="change-quantity update-cart" data-product="{{ item.product.id }}" data-action="add"
+                             src="{% static  'images/arrow-up.png' %}">
+
+                        <img class="change-quantity update-cart" data-product="{{ item.product.id }}" data-action="remove"
+                             src="{% static  'images/arrow-down.png' %}">
+                    </div>
+                </div>
+                <div style="flex:1"><p style="float: right;">{{ item.get_total|floatformat:2 }}/=</p></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="box-element shadow">
+            <p><strong class="fs-5">Order Summary</strong></p>
+            <hr>
+            <h5 class="mb-4">Items: <strong style="float: right;">{{ order.get_cart_items }}</strong></h5>
+            <h5 class="mb-4">Sub-Total: <strong style="float: right;">
+                {{ order.get_cart_total|floatformat:2 }}/=</strong></h5>
+            <a class="btn btn-info d-grid" href="{% url 'checkout' %}">Proceed To Checkout</a>
+        </div>
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,133 @@
+{% extends 'store/base.html' %}
+
+{% block body %}
+<br>
+<div class="row my-4">
+    <div class="col-lg-4">
+        <div class="box-element shadow" id="form-wrapper">
+            <form id="form" method="post">  {% csrf_token %}
+                <p><strong class="fs-5">Customer Information</strong></p>
+                <hr>
+                <div id="user-info" class="row mb-3">
+                    <div class="form-field col-lg-6">
+                        <label>First Name</label>
+                        <input required class="form-control mt-1" type="text" name="first_name" placeholder="First Name*">
+                    </div>
+                    <div class="form-field col-lg-6">
+                        <label>Last Name</label>
+                        <input required class="form-control mt-1" type="text" name="last_name" placeholder="Last Name*">
+                    </div>
+                </div>
+
+                <div id="shipping-info">
+                    <div class="form-field mb-3">
+                        <label>Address</label>
+                        <input required class="form-control mt-1" type="text" name="address" placeholder="Address*">
+                    </div>
+                    <div class="form-field mb-3">
+                        <label>Mobile</label>
+                        <input required class="form-control mt-1" type="tel" name="mobile" placeholder="Mobile*">
+                    </div>
+                    <div class="form-field mb-3">
+                        <label>Email</label>
+                        <input required class="form-control mt-1" type="email" name="email" placeholder="Email**">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="form-field col-lg-6">
+                            <label>City</label>
+                            <input required class="form-control mt-1" type="text" name="city" placeholder="City*">
+                        </div>
+                        <div class="form-field col-lg-6">
+                            <label>Division</label>
+                            <input required class="form-control mt-1" type="text" name="division" placeholder="Division*">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="form-field d-grid">
+                        <button id="form-button" class="btn btn-info" type="submit">Continue</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="box-element shadow mt-4 hidden" id="payment-info">
+            <small>Paypal Options</small>
+            <button id="make-payment">Make Payment</button>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="box-element shadow">
+            <h3>Order Summary</h3>
+            <hr>
+
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2"><img class="row-image" src="{{ item.product.imageURL }}"></div>
+                <div style="flex:2"><p>{{ item.product.name }}</p></div>
+                <div style="flex:1"><p>{{ item.product.price|floatformat:2 }}/=</p></div>
+                <div style="flex:1"><p>x{{ item.quantity }}</p></div>
+            </div>
+            {% endfor %}
+
+            <h5>Items: {{ order.get_cart_items }}</h5>
+            <h5>Sub-Total: {{ order.get_cart_total|floatformat:2 }}/=</h5>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var total = '{{ order.get_cart_total }}'
+
+    var form = document.getElementById('form')
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault()
+
+//        console.log('form submitted')
+
+        document.getElementById('form-button').classList.add('hidden')
+        document.getElementById('payment-info').classList.remove('hidden')
+    })
+
+    document.getElementById('make-payment').addEventListener('click', function(e){
+        submitFormData()
+    })
+
+    function submitFormData(){
+//        console.log('payment button clicked')
+
+        var formData = {
+            'first_name': form.first_name.value,
+            'last_name': form.last_name.value,
+            'address': form.address.value,
+            'mobile': form.mobile.value,
+            'email': form.email.value,
+            'city': form.city.value,
+            'division': form.division.value,
+            'total': total,
+        }
+
+        var url = '/process_order/'
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({'form': formData})
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+//            console.log('Success:', data);
+            alert('Transaction Completed!!');
+            window.location.href = "{% url 'customer-products-view' %}"
+        });
+    }
+</script>
+{% endblock body %}

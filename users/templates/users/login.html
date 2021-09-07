@@ -1,0 +1,55 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row my-4 justify-content-center">
+    <div class="col-md-4">
+        <div class="card card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="post" class="mb-4"> {% csrf_token %}
+                <div class="mb-3 fs-4">
+                    <strong>Account Login</strong>
+                </div>
+                <div class="mb-4">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" id="username"
+                           placeholder="username may be case-sensitive" aria-describedby="emailHelp">
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between">
+                        <label for="password" class="form-label">Password</label>
+                        <small class="text-muted"><a class="text-decoration-none" href="{% url 'password_reset' %}">
+                            Forgotten Password?</a></small>
+                    </div>
+                    <input type="password" name="password" class="form-control" id="password">
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary"><b>Sign In</b></button>
+                </div>
+            </form>
+
+            <div class="border-top">
+                <div class="mt-4 text-center">
+                    <p class="text-muted">Don't have an account?</p>
+                </div>
+                <div class="d-grid mt-4">
+                    <a class="text-decoration-none btn btn-outline-primary" href="{% url 'register' %}">
+                        <b>Create Your Account</b>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

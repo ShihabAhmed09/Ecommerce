@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row my-4 profile">
+    <div class="col-md-3">
+        <div class="list-group">
+            <span class="list-group-item settings-header">Account Settings</span>
+            <a href="{% url 'profile' %}"
+               class="{% block profileactive %} {% endblock profileactive %}">
+                Profile Settings</a>
+            <a href="{% url 'password_change' %}"
+               class="{% block passwordactive %} {% endblock passwordactive %}">
+                Change Password</a>
+        </div>
+    </div>
+
+    {% block profile %}  {% endblock profile %}
+</div>
+{% endblock body %}

@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row my-4 justify-content-center">
+    <div class="col-md-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="card card-body">
+            <div class="mb-4">
+                <a href="{% url 'inbox' %}" class="btn btn-secondary btn-sm me-2">&laquo; Go back to inbox</a>
+            </div>
+
+            <p><strong>Subject:</strong> {{ message.subject }}</p>
+            <p><strong>Name:</strong> {{ message.name }}</p>
+            <p><strong>Email:</strong> {{ message.email }}</p>
+            <p><strong>Sent:</strong> {{ message.created }}</p>
+            <hr>
+            <p>{{ message.subject }}</p>
+        </div>
+    </div>
+</div>
+{% endblock body %}

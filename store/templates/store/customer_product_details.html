@@ -1,0 +1,28 @@
+{% extends 'store/base.html' %}
+
+{% block body %}
+<br>
+<div class="row mt-4">
+    <div class="mb-4">
+        <a href="{% url 'customer-products-view' %}" class="btn btn-secondary">&laquo; Back to products</a>
+    </div>
+</div>
+
+<div class="row my-4 justify-content-center">
+    <div class="col-md-5">
+        <img src="{{ product.image.url }}" alt="Profile Pic" style="max-width: 400px;">
+    </div>
+
+    <div class="col-md-7">
+        <h1 class="product-title">{{ product.name }}</h1>
+
+        <span class="product-price">Price: <strong>{{ product.price|floatformat:2 }}/=</strong></span>
+        <div class="product-details">{{ product.description|safe }}</div>
+        <div class="mt-4">
+            <button class="btn btn-info add-btn update-cart" data-product="{{ product.id }}"
+                    data-action="add"><i class="fas fa-cart-plus me-3"></i>Add to Cart
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock body %}

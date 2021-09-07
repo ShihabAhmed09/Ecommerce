@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block body %}
+<br>
+<div class="row my-4 justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-body">
+            <div class="mb-4">
+                <a href="{% url 'admin-view-customer' %}" class="btn btn-secondary">&laquo; Back to customers list</a>
+            </div>
+            <div class="mb-4 fs-2">
+                <strong>Are you sure you want to delete?</strong>
+            </div>
+            <div>
+                <img src="{{ customer.profile_pic.url }}" class="img-fluid img-thumbnail float-end" alt=""
+                     width="150px" height="150px">
+                <p><strong>Name: </strong>{{ customer.get_name }}</p>
+                <p><strong>Mobile: </strong>{{ customer.mobile }}</p>
+                <p><strong>Email: </strong>{{ customer.user.email }}</p>
+                <p><strong>Address: </strong>{{ customer.address }}</p>
+            </div>
+            <div class="my-4">
+                <form method="post"> {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
