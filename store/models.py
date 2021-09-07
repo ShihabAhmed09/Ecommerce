@@ -82,12 +82,18 @@ class Order(models.Model):
         total = sum([item.quantity for item in order_items])
         return total
 
+    class Meta:
+        ordering = ['-date_ordered']
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     quantity = models.PositiveIntegerField(default=0, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.product)
 
     @property
     def get_total(self):  # calculates individual total price

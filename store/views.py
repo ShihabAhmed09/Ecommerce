@@ -266,6 +266,19 @@ def process_order(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
+def customer_order(request):
+    customer = request.user.customer
+
+    orders = Order.objects.filter(customer=customer, complete=True)
+    completed_orders = orders.filter(status='Delivered')
+    running_orders = orders.exclude(status='Delivered')
+
+    context = {'completed_orders': completed_orders, 'running_orders': running_orders}
+    return render(request, 'store/customer_orders.html', context)
+
+
+@login_required(login_url='login')
 def profile(request):
     customer = request.user.customer
     order, created = Order.objects.get_or_create(customer=customer, complete=False)

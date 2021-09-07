@@ -17,6 +17,7 @@
         <form method="post" enctype="multipart/form-data"> {% csrf_token %}
             <div class="mb-3 fs-4">
                 <strong>Update Profile</strong>
+                <hr>
             </div>
             <div class="mb-4">
                 {{ user_update_form|crispy }}
