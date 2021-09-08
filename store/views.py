@@ -45,6 +45,15 @@ def admin_customer_view(request):
 
 @login_required(login_url='login')
 @admin_only
+def admin_customer_order_view(request):
+    orders = Order.objects.all().exclude(complete='False')
+
+    context = {'orders': orders}
+    return render(request, 'store/admin_customer_order_view.html', context)
+
+
+@login_required(login_url='login')
+@admin_only
 def admin_customer_delete(request, username):
     user = User.objects.get(username=username)
     customer = Customer.objects.get(user=user)
