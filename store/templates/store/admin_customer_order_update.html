@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<br>
+<div class="row my-4 justify-content-center">
+    <div class="col-md-6">
+        <div class="box-element shadow">
+            <h3>Change Order Status</h3>
+            <hr>
+            <form method="post"> {% csrf_token %}
+                {{ form|crispy }}
+                <button class="btn btn-info mt-2" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock body %}

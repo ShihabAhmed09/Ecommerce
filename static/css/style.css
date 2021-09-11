@@ -26,6 +26,10 @@ body {
     background-color: #ef5454;
 }
 
+#orders-processing {
+    background-color: #b054ef;
+}
+
 .cart-button {
     background-color: #31D2F2;
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .23), inset 1px 1px 0 0 hsla(0, 0%, 100%, .2);

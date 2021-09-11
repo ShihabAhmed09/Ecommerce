@@ -23,7 +23,7 @@ class CustomerUpdateForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'description', 'digital', 'featured', 'image', 'tags']
+        fields = ['name', 'price', 'tags', 'description', 'digital', 'featured', 'image']
         widgets = {
             'description': forms.Textarea(attrs={'class': 'form-control mt-1', 'rows': 6}),
         }
@@ -36,7 +36,16 @@ class ProductForm(forms.ModelForm):
 class OrderStatusForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['status']
+        fields = ['customer', 'date_ordered', 'transaction_id', 'status']
+        # widgets = {
+        #     'customer': forms.TextInput(attrs={'disabled': 'True'}),
+        #     'date_ordered': forms.TextInput(attrs={'disabled': 'True'}),
+        #     'transaction_id': forms.TextInput(attrs={'disabled': 'True'}),
+        # }
+
+    def __init__(self, *args, **kwargs):
+        super(OrderStatusForm, self).__init__(*args, **kwargs)
+        self.fields['status'].empty_label = 'Change Order Status'
 
 
 class ShippingAddressForm(forms.ModelForm):

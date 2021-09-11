@@ -26,6 +26,8 @@ urlpatterns = [
     path('delete-customer/<str:username>/', views.admin_customer_delete, name='admin-delete-customer'),
 
     path('customer-orders/', views.admin_customer_order_view, name='admin-customer-order-view'),
+    path('customer-order-update/<str:pk>/', views.admin_customer_order_update, name='admin-customer-order-update'),
+    path('customer-order-delete/<str:pk>/', views.admin_customer_order_delete, name='admin-customer-order-delete'),
 
     path('admin-products/', views.admin_products_view, name='admin-products-view'),
     path('add-product', views.admin_add_product, name='add-product'),

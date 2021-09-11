@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import *
 from .decorators import *
-from .forms import UserUpdateForm, CustomerUpdateForm, ContactForm, FeedbackForm, ProductForm
+from .forms import UserUpdateForm, CustomerUpdateForm, ContactForm, FeedbackForm, ProductForm, OrderStatusForm
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from .filters import ProductFilter
@@ -25,12 +25,16 @@ def admin_dashboard(request):
     total_orders = orders.count()
     delivered = orders.filter(status='Delivered').count()
     pending = orders.filter(status='Pending').count()
+    orders_processing = total_orders - delivered - pending
+
+    recent_orders = Order.objects.all().exclude(complete='False')[:10]
 
     message = Contact.objects.filter(is_read=False).count()
     request.session['messages'] = message
 
     context = {'total_customers': total_customers, 'total_products': total_products, 'total_orders': total_orders,
-               'delivered': delivered, 'pending': pending}
+               'delivered': delivered, 'pending': pending, 'orders_processing': orders_processing,
+               'recent_orders': recent_orders}
     return render(request, 'store/admin_dashboard.html', context)
 
 
@@ -54,6 +58,39 @@ def admin_customer_order_view(request):
 
 @login_required(login_url='login')
 @admin_only
+def admin_customer_order_update(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    form = OrderStatusForm(instance=order)
+    if request.method == 'POST':
+        form = OrderStatusForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Order status updated!!')
+            return redirect('admin-customer-order-view')
+    context = {'form': form}
+    return render(request, 'store/admin_customer_order_update.html', context)
+
+
+@login_required(login_url='login')
+@admin_only
+def admin_customer_order_delete(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    items = order.orderitem_set.all()
+    address = order.shippingaddress_set.all()
+    if request.method == 'POST':
+        # for item in items:
+        #     item.delete()
+        items.delete()
+        address.delete()
+        order.delete()
+        messages.success(request, f'Order deleted from the database!!')
+        return redirect('admin-customer-order-view')
+    context = {'order': order}
+    return render(request, 'store/admin_customer_order_delete.html', context)
+
+
+@login_required(login_url='login')
+@admin_only
 def admin_customer_delete(request, username):
     user = User.objects.get(username=username)
     customer = Customer.objects.get(user=user)
@@ -61,7 +98,7 @@ def admin_customer_delete(request, username):
     if request.method == 'POST':
         user.delete()
         customer.delete()
-        messages.success(request, f'Customer deleted from server!!')
+        messages.success(request, f'Customer deleted from the database!!')
         return redirect('admin-view-customer')
 
     context = {'customer': customer}
