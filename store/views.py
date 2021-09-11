@@ -8,6 +8,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from .filters import ProductFilter
 from django.http import JsonResponse
+from django.db.models import Q
 import json
 import datetime
 
@@ -43,6 +44,10 @@ def admin_dashboard(request):
 def admin_customer_view(request):
     customers = Customer.objects.all()
 
+    query = request.GET.get('q')
+    if query:
+        customers = customers.filter(Q(user__username__icontains=query))
+
     context = {'customers': customers}
     return render(request, 'store/admin_view_customers.html', context)
 
@@ -51,6 +56,10 @@ def admin_customer_view(request):
 @admin_only
 def admin_customer_order_view(request):
     orders = Order.objects.all().exclude(complete='False')
+
+    query = request.GET.get('q')
+    if query:
+        orders = orders.filter(Q(transaction_id=query))
 
     context = {'orders': orders}
     return render(request, 'store/admin_customer_order_view.html', context)
@@ -206,6 +215,10 @@ def customer_products_view(request):
 
     products = Product.objects.all()
 
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(Q(name__icontains=query)).distinct()
+
     # my_filter = ProductFilter(request.GET, queryset=products)
     # products = my_filter.qs
 
@@ -320,7 +333,13 @@ def customer_order(request):
     completed_orders = orders.filter(status='Delivered')
     running_orders = orders.exclude(status='Delivered')
 
-    context = {'completed_orders': completed_orders, 'running_orders': running_orders}
+    total_orders = orders.count()
+    delivered = completed_orders.count()
+    pending = orders.filter(status='Pending').count()
+    orders_processing = total_orders - delivered - pending
+
+    context = {'completed_orders': completed_orders, 'running_orders': running_orders, 'total_orders': total_orders,
+               'delivered': delivered, 'pending': pending, 'orders_processing': orders_processing}
     return render(request, 'store/customer_orders.html', context)
 
 

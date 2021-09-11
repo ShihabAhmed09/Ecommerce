@@ -15,7 +15,17 @@
 
     {% if orders %}
     <div class="box-element shadow mb-4">
-        <p><strong class="fs-3">All Bookings</strong></p>
+        <div class="d-flex justify-content-between">
+            <strong class="fs-3">All Bookings</strong>
+            <form class="d-flex w-50" method="get">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input class="form-control me-2" type="search" name="q" aria-label="Search"
+                           placeholder="Search order using transaction id">
+                </div>
+                <button class="btn btn-outline-info" type="submit">Search</button>
+            </form>
+        </div>
         <hr>
 
         <table class="table table-striped table-hover border">
@@ -74,7 +84,7 @@
     </div>
     {% else %}
     <div class="box-element shadow mb-4">
-        <p class="text-center"><strong class="fs-3">No orders!!!</strong></p>
+        <p class="text-center"><strong class="fs-3">No orders found!!!</strong></p>
     </div>
     {% endif %}
 </div>

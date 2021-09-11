@@ -120,9 +120,13 @@
                 </li>
             </ul>
 
-            <form class="d-flex w-50 me-2">
-                <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
+            <form class="d-flex w-50 me-2" method="get" action="{% url 'customer-products-view' %}">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search product"
+                           value="{{ request.GET.q }}" aria-label="Search product">
+                </div>
+                <button class="btn btn-outline-info" type="submit"><b>Search</b></button>
             </form>
 
             {% if request.user.is_authenticated %}
